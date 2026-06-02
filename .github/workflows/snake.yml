@@ -2,36 +2,31 @@ name: Generate Snake
 
 on:
   schedule:
-    - cron: "0 0 * * *"  # Runs automatically every day at midnight
-  workflow_dispatch:     # Lets you run it manually from the Actions tab
+    # Runs every 12 hours
+    - cron: "0 */12 * * *"
+  workflow_dispatch:
 
-# Fixes Exit Code 128 by giving the action permission to write to your repository
+# Grant write permissions so the action can commit files
 permissions:
   contents: write
-
+    
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      # Upgraded from v3 to v4 to fix Node.js warnings
+      # Upgraded to v4 to use modern Node runtimes
       - uses: actions/checkout@v4
-
+      
       - uses: Platane/snk@v3
         id: snake-gif
         with:
-          github_user_name: ${{ github.repository_owner }}
-          outputs: |
-            dist/github-contribution-grid-snake.svg
-            dist/github-contribution-grid-snake-dark.svg?palette=github-dark
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          github_user_name: Johir2028
+          svg_out_path: dist/github-contribution-grid-snake.svg
 
-      - name: Push new files to output branch
-        # Upgraded from v3.1.0 to v4 to fix Node.js warnings
-        uses: crazy-max/ghaction-github-pages@v4
+      # Upgraded to v4 to use modern Node runtimes
+      - uses: crazy-max/ghaction-github-pages@v4
         with:
           target_branch: output
           build_dir: dist
-          commit_message: Update snake animations
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
